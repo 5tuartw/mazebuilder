@@ -20,10 +20,22 @@ I would like to add:
 - Python 3.x
 - Tkinter (included with standard Python installations)
 
-## Installation
+## Contributing
+## 🤝 Contributing
 
-1. Clone the repository:
+### Clone the repo
 
 ```bash
-git clone https://github.com/5tuartw/mazesolver.git
-cd mazesolver
+git clone https://github.com/5tuartw/mazebuilder
+cd mazebuilder
+```
+
+### Run the project
+
+```bash
+python3 main.py
+```
+
+### Submit a pull request
+
+If you'd like to contribute, please fork the repository and open a pull request to the `main` branch.
