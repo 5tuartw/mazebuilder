@@ -1,3 +1,5 @@
+# dormant code for powerups in a playable version of the game
+
 class Powerup:
     def __init__(self, canvas, cell_size, start_x, start_y, margin, item_type):
         self._canvas = canvas

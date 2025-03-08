@@ -83,9 +83,9 @@ class Maze():
     self._draw_cell(self._num_cols-1, self._num_rows-1)
   
 
-  #recursive backtracking algorithm for maze generation
-  #starts with cell i, j and moves to a random unvisited neighbour, removing walls in between them
-  #if no unvisited neighbours, backtracks to the previous cell
+  # recursive backtracking algorithm for maze generation
+  # starts with cell i, j and moves to a random unvisited neighbour, removing walls in between them
+  # if no unvisited neighbours, backtracks to the previous cell
   def _break_walls_backtracking_r(self, i, j):
     self._cells[i][j].visited = True
     while True:
@@ -132,11 +132,11 @@ class Maze():
       self._break_walls_backtracking_r(next_cell[0], next_cell[1])
 
 
-  #Prim's algorithm for maze generation
-  #Starts with a random cell and adds all walls to a list
-  #Randomly selects a wall from the list and removes it if one cell is visited and the other is not
-  #Adds the new cell to the list of visited cells and adds all walls of the new cell to the list
-  #Repeats until all cells are visited
+  # Prim's algorithm for maze generation
+  # Starts with a random cell and adds all walls to a list
+  # Randomly selects a wall from the list and removes it if one cell is visited and the other is not
+  # Adds the new cell to the list of visited cells and adds all walls of the new cell to the list
+  # Repeats until all cells are visited
   def _break_walls_prims(self):
     start_x = random.randrange(self._num_cols)
     start_y = random.randrange(self._num_rows)
@@ -194,6 +194,11 @@ class Maze():
 
     self._reset_cells_visited()
 
+  # Kruskal's method ensure's that any two points only have 1 path between them
+  # Each cell starts as its own independent set
+  # It randomly chooses the walls of a cell to break and merge its set with the new join
+  # This repeats until there is only one set
+  # The maze becomes a random spanning tree, a connected graph without cycles
   def _break_walls_kruskal(self):
     walls = []
     sets = {}
@@ -241,12 +246,14 @@ class Maze():
 
     self._reset_cells_visited()
 
+  # resets all cells' visited varialbe to False to reenable searching/checking
   def _reset_cells_visited(self):
     self._visit_count = 0
     for i in self._cells:
       for j in i:
         j.visited = False
 
+  # calls _solve_r recursive function starting from the bottom right cell
   def solve(self):
     return self._solve_r(self._num_cols-1, self._num_rows-1)
   
@@ -292,6 +299,7 @@ class Maze():
     
     return False
   
+  # breadth-first-search to 
   def find_shortest_path(self, start, end):
       queue = deque([(start, [start])])
       visited = set()
@@ -376,7 +384,8 @@ class Maze():
           current_level = next_level  # Move to the next level of branching
           distance += 1
 
-
+  # Looks at cells not on the past and calculate's their distance, colouring them on a
+  # gradient from yellow (on the route) to red (farthest from shortest route)
   def colour_paths(self):
       start = (0, 0)
       end = (self._num_cols - 1, self._num_rows - 1)
@@ -384,7 +393,8 @@ class Maze():
       self.update_distances_to_path()
 
       if self._shortest_path:
-          longest_path = self._num_cols * self._num_rows - len(self._shortest_path)
+          # longest path variable deprecated due to making it difficult to compare mazes objectively
+          # longest_path = self._num_cols * self._num_rows - len(self._shortest_path)
           for i in range(self._num_cols):
               for j in range(self._num_rows):
                   distance = self._cells[i][j].distance_to_path

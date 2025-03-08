@@ -1,15 +1,21 @@
-#import tkinter as tk
 from window import Window
-#from maze import Maze
-#from cell import Cell
 import sys
+from config import ConfigManager
 
 def main():
-    screen_x = 800
-    screen_y = 600
+
+    default_config = {
+        "api_key": "YOUR_API_KEY",
+        "log_level": "INFO",
+        "window_size": {"width": 800, "height": 600},
+    }
+
+    config_manager = ConfigManager("config.json", default_config)
+
     sys.setrecursionlimit(10000)
-    win = Window(screen_x, screen_y)
-    
+    win = Window(config_manager)
+    config_manager.save_config()
+
     win.wait_for_close()
 
 
