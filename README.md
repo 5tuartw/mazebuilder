@@ -9,6 +9,7 @@ This project is a maze solver application built using Python and Tkinter. It gen
 - Generate mazes using different algorithms (Backtracking, Prim's (NYI), etc. (NYI))
 - Solve mazes and display the solution path
 - Visualize multiple mazes on the same canvas
+![screenshot1](https://github.com/5tuartw/mazebuilder/blob/maze-variations/Screenshot1.png)
 
 ## Idea for development ##
 I would like to add:
