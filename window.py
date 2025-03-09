@@ -19,7 +19,7 @@ class Window:
         self._config_manager = config_manager
 
         self.__root = tk.Tk()
-        self.__root.title("Maze Solver")
+        self.__root.title("Maze Builder")
         self.__root.geometry(f"{self._width}x{self._height}")
 
         self.control_frame = tk.Frame(self.__root)
