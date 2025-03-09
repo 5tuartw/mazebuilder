@@ -1,25 +1,26 @@
 import tkinter as tk
 from tkinter import ttk
 from maze import Maze
+from findrect import find_best_rect
 
 class Window:
     MARGIN = 10
     CELL_SIZE_DIVISOR = 4
     MIN_CELL_SIZE = 10
-    MAX_WINDOW_HEIGHT = 600
-    MIN_WINDOW_WIDTH = 700
 
     def __init__(self, config_manager):
         self._width = config_manager.get("window_width")
         self._height = config_manager.get("window_height")
         self._num_rows = 0
         self._num_cols = 0
-        self._cell_size = 0
+        self._cell_size = self.MIN_CELL_SIZE
         self._num_mazes = config_manager.get("num_mazes")
+        self._style = "Backtrack"
         self._config_manager = config_manager
 
         self.__root = tk.Tk()
         self.__root.title("Maze Solver")
+        self.__root.geometry(f"{self._width}x{self._height}")
 
         self.control_frame = tk.Frame(self.__root)
         self.control_frame.pack(side=tk.TOP, fill=tk.X)
@@ -77,12 +78,16 @@ class Window:
     def update_num_mazes(self):
         try:
             self._num_mazes = int(self.num_mazes_entry.get())
-            self._create_mazes("Backtrack")  # You can change the default style if needed
+            self._create_mazes()
+            self._config_manager.set("num_mazes", self._num_mazes)
+            self._config_manager.save_config()
         except ValueError:
             print("Invalid number of mazes")
 
-
-    def _create_mazes(self, style):
+    def _create_mazes(self, style=None):
+        if style:
+            self._style = style
+        print(f"Creating {self._num_mazes} mazes in the style: {self._style}")
         self.__canvas.delete("all")
         self._mazes = []
 
@@ -90,13 +95,12 @@ class Window:
         self._num_rows = 6
 
         self._calculate_cell_size(self._width - 2 * self.MARGIN, self._height - 2 * self.MARGIN)
-        self._adjust_window_size()
 
         x_position = self.MARGIN
         y_position = self.MARGIN
 
         for i in range(self._num_mazes):
-            self._mazes.append(Maze(x_position, y_position, self._num_rows, self._num_cols, self._cell_size, self._cell_size, self.__root, self.__canvas, style=style))
+            self._mazes.append(Maze(x_position, y_position, self._num_rows, self._num_cols, self._cell_size, self._cell_size, self.__root, self.__canvas, style=self._style))
             x_position += self._num_cols * self._cell_size + 10
             if x_position + self._num_cols * self._cell_size > self._width:
                 x_position = self.MARGIN
@@ -105,27 +109,11 @@ class Window:
             self._mazes[i].draw_shortest_path()
 
     def _calculate_cell_size(self, maze_width, maze_height):
-        cell_size = maze_width / self._num_cols
-        if cell_size * self._num_rows < maze_height:
-            self._cell_size = max(cell_size / self.CELL_SIZE_DIVISOR, self.MIN_CELL_SIZE)
+        layout = find_best_rect(self._num_mazes)
+        if layout:
+            maze_rows, maze_columns, _ = layout
+            cell_size_width = (self._width - (maze_columns + 1) * self.MARGIN) / (maze_columns * self._num_cols)
+            cell_size_height = (self._height - (maze_rows + 1) * self.MARGIN) / (maze_rows * self._num_rows)
+            self._cell_size = max(min(cell_size_height, cell_size_width), self.MIN_CELL_SIZE)
         else:
-            self._cell_size = max(maze_height / self._num_rows / self.CELL_SIZE_DIVISOR, self.MIN_CELL_SIZE)
-        print(f"Cell size: {cell_size}")
-
-    def _adjust_window_size(self):
-        num_mazes_per_row = (self._width - self.MARGIN) // (self._num_cols * self._cell_size + 10)
-        num_rows_of_mazes = (self._num_mazes + num_mazes_per_row - 1) // num_mazes_per_row
-
-        required_width = max(self.MIN_WINDOW_WIDTH, int(num_mazes_per_row * (self._num_cols * self._cell_size + 10) + self.MARGIN))
-        required_height = int(num_rows_of_mazes * (self._num_rows * self._cell_size + 10) + self.MARGIN)
-
-        self.__root.update_idletasks()
-        control_frame_height = self.control_frame.winfo_height()
-        total_required_height = required_height + control_frame_height
-
-        self.__root.geometry(f"{required_width}x{total_required_height}")
-        self.__canvas.config(width=required_width, height=required_height)
-
-        self._config_manager.set("window_width", required_width)
-        self._config_manager.set("window_height", total_required_height)
-        self._config_manager.save_config()
+            self._cell_size = self.MIN_CELL_SIZE    
