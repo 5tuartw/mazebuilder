@@ -10,11 +10,11 @@ This project is a maze solver application built using Python and Tkinter. It gen
 - Solve mazes and display the solution path
 - Visualize multiple mazes on the same canvas
 - See diversions from the main path coloured by who large a detour they cause
-![screenshot1](https://github.com/5tuartw/mazebuilder/blob/maze-variations/Screenshot1.png)
+![screenshot](https://github.com/5tuartw/mazebuilder/blob/maze-variations/screenshot2.png)
 
 ## Idea for development ##
-I would like to add:
-- statistics panel to show average data about the complexity of each maze (solution length, number of turns, dead-ends etc)
+I would like to develop:
+- improvements to the stats window, with some visualisations and mouse-over details
 - allow people to play the mazes to compare completion times with the complexity data to see which metrics correlate with maze difficulty
 
 ## Requirements
